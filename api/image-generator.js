@@ -22,7 +22,7 @@ function mockSuccessResponse(prompt) {
     "https://example.com/mock-image-3.jpg",
   ];
   const randomImage = sampleImages[Math.floor(Math.random() * sampleImages.length)];
-  
+
   return {
     success: true,
     imageUrl: randomImage,
@@ -35,48 +35,48 @@ function mockSuccessResponse(prompt) {
 router.post('/generate-image', async (req, res) => {
   try {
     const { style, flowerType, colorTheme, description } = req.body;
-    
+
     // 构建完整提示词
     const prompt = `${style}风格，精美的${colorTheme}色${flowerType}绢花，特写镜头，细致质感，精湛工艺，逼真质地，${description || ''}`;
-    
+
     console.log('请求提示词:', prompt);
-    
+
     // 切换到模拟模式(设为false使用实际API)
     const useMockData = true;
-    
+
     if (useMockData) {
       // 返回模拟数据而不是实际调用API
       console.log('使用模拟数据模式，不会实际调用API');
       const mockResponse = mockSuccessResponse(prompt);
-      
+
       // 添加2秒延迟模拟API调用时间
       setTimeout(() => {
         res.json(mockResponse);
       }, 2000);
-      
+
       return;
     }
-    
+
     // 以下代码使用火山方舟API生成图像
     try {
       console.log('正在调用火山方舟API...');
-      
+
       // 这里需要确认火山方舟是否支持文生图功能
       // 如果支持，请使用正确的模型ID和API调用方式
       // 目前文档中未显示文生图示例，以下为常规调用方式
-      
+
       const response = await openai.images.generate({
         model: "ep-20250329144652-jcmf8", // 请替换为正确的文生图模型ID
         prompt: prompt,
         n: 1, // 生成1张图片
         size: "1024x1024" // 图片尺寸
       });
-      
+
       console.log('API响应:', JSON.stringify(response, null, 2));
-      
+
       if (response && response.data && response.data.length > 0) {
         const imageUrl = response.data[0].url;
-        
+
         res.json({
           success: true,
           imageUrl: imageUrl,
@@ -90,16 +90,16 @@ router.post('/generate-image', async (req, res) => {
       console.error('API调用错误:', apiError);
       throw apiError;
     }
-    
+
   } catch (error) {
     console.error('处理请求出错:', error.message);
-    
+
     // 增强错误日志
     if (error.response) {
       console.error('错误状态码:', error.response.status);
       console.error('错误数据:', JSON.stringify(error.response.data, null, 2));
     }
-    
+
     res.status(500).json({
       success: false,
       message: '图像生成失败',
