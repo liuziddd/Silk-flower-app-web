@@ -1,7 +1,7 @@
 <template>
   <div class="w-full overflow-hidden bg-zinc-900" :class="{'dark': isDarkMode, 'light': !isDarkMode}">
     <!-- 固定导航栏 -->
-    <nav class="fixed top-0 left-0 right-0 z-50 w-full shadow-lg">
+    <nav class="fixed top-0 left-0 right-0 z-50 w-full shadow-lg" :class="isDarkMode ? 'bg-zinc-900' : 'bg-white'">
       <div class="flex flex-col md:flex-row items-center justify-between px-4 md:px-8 py-4">
         <div class="flex items-center w-full md:w-auto justify-between">
           <div class="flex items-center">
@@ -13,12 +13,12 @@
               <svg v-if="isDarkMode" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
               </svg>
-              <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
               </svg>
             </button>
             <button @click="mobileMenuOpen = !mobileMenuOpen" class="p-2">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" :class="isDarkMode ? 'text-white' : 'text-gray-700'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path v-if="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -31,7 +31,7 @@
           <li>
             <a
               href="#"
-              :class="{ 'font-bold theme-brand-gradient': isHomePage, 'transition hover:text-blue-400': !isHomePage }"
+              :class="{ 'font-bold theme-brand-gradient': isHomePage, 'transition hover:text-blue-400': !isHomePage, 'text-gray-700': !isDarkMode && !isHomePage }"
               @click="
                 isHomePage = true;
                 isProductPage = false;
@@ -46,7 +46,7 @@
           <li>
             <a
               href="#product-section"
-              :class="{ 'font-bold theme-brand-gradient': isProductPage, 'transition hover:text-blue-400': !isProductPage }"
+              :class="{ 'font-bold theme-brand-gradient': isProductPage, 'transition hover:text-blue-400': !isProductPage, 'text-gray-700': !isDarkMode && !isProductPage }"
               @click="
                 isHomePage = false;
                 isProductPage = true;
@@ -61,7 +61,7 @@
           <li>
             <a
               href="#community-section"
-              :class="{ 'font-bold theme-brand-gradient': isCommunityPage, 'transition hover:text-blue-400': !isCommunityPage }"
+              :class="{ 'font-bold theme-brand-gradient': isCommunityPage, 'transition hover:text-blue-400': !isCommunityPage, 'text-gray-700': !isDarkMode && !isCommunityPage }"
               @click="
                 isHomePage = false;
                 isProductPage = false;
@@ -76,7 +76,7 @@
           <li>
             <a
               href="#"
-              :class="{ 'font-bold theme-brand-gradient': isCustomPage, 'transition hover:text-blue-400': !isCustomPage }"
+              :class="{ 'font-bold theme-brand-gradient': isCustomPage, 'transition hover:text-blue-400': !isCustomPage, 'text-gray-700': !isDarkMode && !isCustomPage }"
               @click="
                 isHomePage = false;
                 isProductPage = false;
@@ -91,7 +91,7 @@
           <li>
             <a
               href="#vr-section"
-              :class="{ 'font-bold theme-brand-gradient': isVRPage, 'transition hover:text-blue-400': !isVRPage }"
+              :class="{ 'font-bold theme-brand-gradient': isVRPage, 'transition hover:text-blue-400': !isVRPage, 'text-gray-700': !isDarkMode && !isVRPage }"
               @click="
                 isHomePage = false;
                 isProductPage = false;
@@ -108,7 +108,7 @@
               <svg v-if="isDarkMode" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
               </svg>
-              <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
               </svg>
             </button>
@@ -116,12 +116,12 @@
         </ul>
         
         <!-- 移动菜单 -->
-        <div v-if="mobileMenuOpen" class="absolute top-full left-0 w-full bg-zinc-900 shadow-lg md:hidden py-2">
+        <div v-if="mobileMenuOpen" class="absolute top-full left-0 w-full shadow-lg md:hidden py-2" :class="isDarkMode ? 'bg-zinc-900' : 'bg-white theme-gradient-bg'">
           <ul class="flex flex-col space-y-2 px-4">
-            <li class="py-2 border-b border-zinc-700">
+            <li class="py-2 border-b" :class="isDarkMode ? 'border-zinc-700' : 'border-gray-200'">
               <a
                 href="#"
-                :class="{ 'font-bold theme-brand-gradient': isHomePage, 'transition hover:text-blue-400': !isHomePage }"
+                :class="{ 'font-bold theme-brand-gradient': isHomePage, 'transition hover:text-blue-400': !isHomePage, 'text-gray-700': !isDarkMode && !isHomePage }"
                 @click="
                   isHomePage = true;
                   isProductPage = false;
@@ -134,10 +134,10 @@
                 首页
               </a>
             </li>
-            <li class="py-2 border-b border-zinc-700">
+            <li class="py-2 border-b" :class="isDarkMode ? 'border-zinc-700' : 'border-gray-200'">
               <a
                 href="#product-section"
-                :class="{ 'font-bold theme-brand-gradient': isProductPage, 'transition hover:text-blue-400': !isProductPage }"
+                :class="{ 'font-bold theme-brand-gradient': isProductPage, 'transition hover:text-blue-400': !isProductPage, 'text-gray-700': !isDarkMode && !isProductPage }"
                 @click="
                   isHomePage = false;
                   isProductPage = true;
@@ -150,10 +150,10 @@
                 产品
               </a>
             </li>
-            <li class="py-2 border-b border-zinc-700">
+            <li class="py-2 border-b" :class="isDarkMode ? 'border-zinc-700' : 'border-gray-200'">
               <a
                 href="#community-section"
-                :class="{ 'font-bold theme-brand-gradient': isCommunityPage, 'transition hover:text-blue-400': !isCommunityPage }"
+                :class="{ 'font-bold theme-brand-gradient': isCommunityPage, 'transition hover:text-blue-400': !isCommunityPage, 'text-gray-700': !isDarkMode && !isCommunityPage }"
                 @click="
                   isHomePage = false;
                   isProductPage = false;
@@ -166,10 +166,10 @@
                 社区
               </a>
             </li>
-            <li class="py-2 border-b border-zinc-700">
+            <li class="py-2 border-b" :class="isDarkMode ? 'border-zinc-700' : 'border-gray-200'">
               <a
                 href="#"
-                :class="{ 'font-bold theme-brand-gradient': isCustomPage, 'transition hover:text-blue-400': !isCustomPage }"
+                :class="{ 'font-bold theme-brand-gradient': isCustomPage, 'transition hover:text-blue-400': !isCustomPage, 'text-gray-700': !isDarkMode && !isCustomPage }"
                 @click="
                   isHomePage = false;
                   isProductPage = false;
@@ -185,7 +185,7 @@
             <li class="py-2">
               <a
                 href="#vr-section"
-                :class="{ 'font-bold theme-brand-gradient': isVRPage, 'transition hover:text-blue-400': !isVRPage }"
+                :class="{ 'font-bold theme-brand-gradient': isVRPage, 'transition hover:text-blue-400': !isVRPage, 'text-gray-700': !isDarkMode && !isVRPage }"
                 @click="
                   isHomePage = false;
                   isProductPage = false;
