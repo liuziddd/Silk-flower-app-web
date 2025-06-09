@@ -1,0 +1,484 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+#app {
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: "Inter", "PingFang SC", "Helvetica Neue", Helvetica, Arial,
+      sans-serif;
+    background-color: var(--beijinghua-bg-main);
+    color: var(--beijinghua-text-main);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  html.dark {
+    background-color: var(--beijinghua-bg-main);
+    color: var(--beijinghua-text-main);
+  }
+
+  html.light {
+    background-color: var(--beijinghua-bg-main);
+    color: var(--beijinghua-text-main);
+  }
+
+  body {
+    width: 100%;
+    overflow-x: hidden;
+    /* 防止横向滚动条 */
+  }
+}
+
+/* 引入字体 */
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap");
+/* 引入FontAwesome图标 */
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css");
+
+/* 花小绢IP形象相关样式 */
+.font-microsoftYaHei {
+  font-family: "Microsoft YaHei", "Noto Serif SC", serif;
+}
+
+/* 自定义滚动条样式 - 基础 */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+}
+
+/* 自定义滚动条样式 - 根据主题调整 */
+html.dark ::-webkit-scrollbar-track {
+  background: #2d2d2d;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: #555;
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #777;
+}
+
+html.light ::-webkit-scrollbar-track {
+  background: #f0f0f0;
+}
+
+html.light ::-webkit-scrollbar-thumb {
+  background: #ccc;
+}
+
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* 聊天头像呼吸灯效果 */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 199, 217, 0.7);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgba(239, 199, 217, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 199, 217, 0);
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite;
+}
+
+/* AOS动画优化，修复抽搐 */
+[data-aos] {
+  will-change: opacity, transform;
+  transition-duration: 1s !important;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* 主要按钮 */
+.btn-primary {
+  @apply px-6 py-3 font-semibold text-white transition duration-300 bg-blue-600 rounded-lg shadow-lg hover:bg-blue-500;
+}
+
+/* 导航栏 */
+.nav-link {
+  @apply px-3 py-2 text-lg transition-all duration-200 rounded-lg hover:text-blue-400 hover:bg-zinc-800;
+}
+
+/* 产品卡片 */
+.card {
+  @apply p-6 transition-transform duration-300 shadow-lg bg-zinc-900 rounded-xl hover:shadow-2xl hover:scale-105;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .forumHeight {
+    height: 600px;
+  }
+}
+
+.section-container {
+  padding-top: 80px;
+}
+
+#ai-design-section,
+#community-section {
+  padding-top: 100px;
+  margin-top: -20px;
+}
+
+html {
+  scroll-padding-top: 80px;
+}
+
+/* 花小绢聊天窗口样式 */
+.chat-avatar {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, #efc7d9, #e5918a);
+}
+
+.chat-avatar:hover {
+  transform: scale(1.1);
+}
+
+/* 更宽的聊天窗口 */
+.chat-window {
+  width: 24rem;
+  /* 原来是20rem，增加到24rem */
+  max-width: 90vw;
+  /* 在移动设备上限制最大宽度为视口宽度的90% */
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(to bottom, #9caba9, #98bbb0);
+  transition: all 0.3s ease-in-out;
+}
+
+.chat-header {
+  padding: 0.75rem;
+  background: linear-gradient(to right, #cc6600, #cc9900);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* 聊天内容区域也相应增高 */
+.chat-messages {
+  height: 24rem;
+  /* 原来是20rem，增加到24rem */
+  padding: 0.75rem;
+  overflow-y: auto;
+  background-color: rgba(255, 255, 255, 0.9);
+  scrollbar-width: thin;
+  scrollbar-color: #cc6600 rgba(255, 255, 255, 0.1);
+}
+
+.chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background-color: #cc6600;
+  border-radius: 3px;
+}
+
+.bot-message {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.user-message {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  margin-bottom: 0.75rem;
+}
+
+/* 信息气泡最大宽度调整 */
+.message-content {
+  max-width: 85%;
+  /* 原来是80%，增加到85% */
+  padding: 0.5rem 0.75rem;
+  word-break: break-word;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* 美化消息气泡 */
+.bot-message .message-content {
+  background-color: #ffefd5;
+  color: #333;
+  border-radius: 1rem 1rem 1rem 0.25rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.user-message .message-content {
+  background-color: #cc6600;
+  color: white;
+  border-radius: 1rem 1rem 0.25rem 1rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.message-avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 0.5rem;
+}
+
+/* 改进聊天输入区域 */
+.chat-input {
+  display: flex;
+  padding: 0.75rem;
+  background-color: white;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 1.5rem;
+  /* 更圆的输入框 */
+  outline: none;
+  font-size: 0.95rem;
+  background-color: #f7f7f7;
+  transition: all 0.2s ease;
+}
+
+.chat-input input:focus {
+  border-color: #cc6600;
+  box-shadow: 0 0 0 2px rgba(204, 102, 0, 0.2);
+  background-color: white;
+}
+
+.chat-input button {
+  margin-left: 0.5rem;
+  padding: 0.6rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  background-color: #cc6600;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  /* 圆形按钮 */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.chat-input button:hover {
+  background-color: #cc9900;
+  transform: scale(1.05);
+}
+
+.notification-dot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1rem;
+  height: 1rem;
+  background-color: #ff4d4f;
+  border-radius: 50%;
+}
+
+/* 聊天下拉菜单 */
+.chat-dropdown {
+  min-width: 150px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.chat-dropdown button {
+  transition: all 0.2s ease;
+}
+
+.chat-dropdown button:hover {
+  background-color: rgba(204, 102, 0, 0.1);
+}
+
+/* 为空聊天窗口添加样式 */
+.chat-messages .text-center {
+  padding: 2rem 1rem;
+  color: #888;
+}
+
+.chat-messages .text-center .text-4xl {
+  font-size: 2rem;
+  animation: wave 2s infinite;
+}
+
+@keyframes wave {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  10% {
+    transform: rotate(14deg);
+  }
+
+  20% {
+    transform: rotate(-8deg);
+  }
+
+  30% {
+    transform: rotate(14deg);
+  }
+
+  40% {
+    transform: rotate(-4deg);
+  }
+
+  50% {
+    transform: rotate(10deg);
+  }
+
+  60% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+/* 响应式调整 */
+@media (max-width: 640px) {
+  .chat-window {
+    width: 85vw;
+    /* 在小屏幕上使用视口宽度的85% */
+    right: 50%;
+    transform: translateX(50%);
+  }
+}
+
+/* 主题切换过渡动画 */
+* {
+  transition-property: background-color, border-color, color, fill, stroke, box-shadow, transform;
+  transition-duration: 0.3s;
+  transition-timing-function: ease;
+}
+
+/* 页面整体平滑过渡 */
+body,
+html {
+  transition: background-color 0.5s ease;
+}
+
+/* 渐变背景效果延迟渐变 */
+[class*="gradient"] {
+  transition: background-image 0.5s ease, background-color 0.5s ease;
+  background-size: 200% 200%;
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* 主题按钮的漂浮效果 */
+.theme-btn {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.theme-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* 卡片悬停效果增强 */
+.product-card,
+.bg-zinc-800 {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover,
+.bg-zinc-800:hover {
+  transform: translateY(-5px) scale(1.03);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* 链接交互优化 */
+a {
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+a:hover {
+  transform: translateY(-1px);
+}
+
+/* 品牌名称特效 */
+.theme-brand-gradient {
+  background-size: 200% auto;
+  animation: textShimmer 3s infinite linear;
+}
+
+@keyframes textShimmer {
+  0% {
+    background-position: 0% center;
+  }
+
+  100% {
+    background-position: 200% center;
+  }
+}

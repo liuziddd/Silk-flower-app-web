@@ -1,0 +1,31 @@
+{
+    "models": [
+        {
+            "filename": "red.fbx",
+            "description": "暗色主题使用的红色绢花模型",
+            "originalSize": "118MB",
+            "note": "此模型由于体积过大不适合部署在Vercel上，请在本地开发环境或专用服务器托管大型静态文件"
+        },
+        {
+            "filename": "pink.fbx",
+            "description": "亮色主题使用的粉色绢花模型",
+            "originalSize": "135MB",
+            "note": "此模型由于体积过大不适合部署在Vercel上，请在本地开发环境或专用服务器托管大型静态文件"
+        },
+        {
+            "filename": "model.glb",
+            "description": "通用绢花模型(GLB格式)",
+            "originalSize": "13MB",
+            "note": "此模型尺寸较小，但仍然超过Vercel推荐的静态资源大小。建议使用CDN或专用对象存储服务"
+        }
+    ],
+    "deployment": {
+        "recommendations": [
+            "使用AWS S3、七牛云或其他对象存储服务托管大型3D模型文件",
+            "将模型文件压缩或降低精度以减小文件大小",
+            "考虑将3D模型服务拆分为单独的服务",
+            "实际部署时，修改model-service.js以从云存储加载模型"
+        ],
+        "tempSolution": "Vercel部署时，model-service.js已被修改为提供有关模型的信息而非实际文件"
+    }
+}

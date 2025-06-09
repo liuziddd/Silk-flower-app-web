@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>绢花3D模型查看器</title>
+
+    <!-- 移除旧的导入方式 -->
+    <style>
+        :root {
+            --light-background: #fff6fa;
+            --light-color: #333333;
+            --dark-background: #18181b;
+            --dark-color: #e4e4e7;
+            --light-accent: #e91e63;
+            --dark-accent: #ffd700;
+            --light-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --dark-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Inter", "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.light {
+            background-color: var(--light-background);
+            color: var(--light-color);
+        }
+
+        body.dark {
+            background-color: var(--dark-background);
+            color: var(--dark-color);
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            max-width: 1400px;
+            /* 增加最大宽度 */
+            margin: 0 auto;
+            /* 居中显示 */
+        }
+
+        .model-container {
+            flex: 1;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            min-height: 700px;
+            /* 增加最小高度 */
+        }
+
+        #model-viewer {
+            width: 100%;
+            height: 100%;
+            background-color: transparent;
+            min-height: 700px;
+            /* 确保模型查看器也有最小高度 */
+        }
+
+        /* 控制面板 */
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        body.light .controls {
+            background: rgba(255, 246, 250, 0.8);
+            box-shadow: var(--light-shadow);
+        }
+
+        body.dark .controls {
+            background: rgba(24, 24, 27, 0.8);
+            box-shadow: var(--dark-shadow);
+        }
+
+        .controls button {
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        body.light .controls button {
+            background: white;
+            color: #333;
+            box-shadow: var(--light-shadow);
+        }
+
+        body.dark .controls button {
+            background: #27272a;
+            color: #e4e4e7;
+            box-shadow: var(--dark-shadow);
+        }
+
+        body.light .controls button:hover {
+            background: var(--light-accent);
+            color: white;
+        }
+
+        body.dark .controls button:hover {
+            background: var(--dark-accent);
+            color: black;
+        }
+
+        .loading-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.3);
+            z-index: 50;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-container.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-content {
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 80%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-top-color: transparent;
+            display: inline-block;
+            margin-bottom: 15px;
+            animation: spin 1s linear infinite;
+        }
+
+        body.light .spinner {
+            border-top-color: var(--light-accent);
+        }
+
+        body.dark .spinner {
+            border-top-color: var(--dark-accent);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            margin-top: 15px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        body.light .progress-fill {
+            background-color: var(--light-accent);
+        }
+
+        body.dark .progress-fill {
+            background-color: var(--dark-accent);
+        }
+
+        .message {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .message-small {
+            margin-top: 5px;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* 全屏提示 */
+        .fullscreen-hint {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+            z-index: 20;
+        }
+
+        .fullscreen-hint:hover {
+            opacity: 1;
+        }
+
+        body.light .fullscreen-hint {
+            background: rgba(255, 246, 250, 0.8);
+            color: var(--light-color);
+        }
+
+        body.dark .fullscreen-hint {
+            background: rgba(24, 24, 27, 0.8);
+            color: var(--dark-color);
+        }
+    </style>
+    <!-- 使用script标签，将功能代码单独放入JS文件 -->
+    <script type="module" src="./index3d.js"></script>
+</head>
+
+<body class="dark">
+    <div class="container">
+        <div class="model-container">
+            <!-- 使用Three.js自定义渲染容器替代model-viewer组件 -->
+            <div id="model-viewer"></div>
+
+            <!-- 加载指示器 -->
+            <div class="loading-container" id="loading">
+                <div class="loading-content">
+                    <div class="spinner"></div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <div class="message">正在加载3D模型...</div>
+                    <div class="message-small">请确保3D模型文件存在且格式正确</div>
+                </div>
+            </div>
+
+            <!-- 控制面板 -->
+            <div class="controls">
+                <button id="rotate-toggle" title="自动旋转">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 4V2.21C12 1.76 11.46 1.54 11.15 1.86L9.2 3.81C9.1 3.92 9.1 4.09 9.2 4.19L11.15 6.14C11.46 6.46 12 6.24 12 5.79V4ZM6.14 11.15L4.19 9.2C4.09 9.1 3.92 9.1 3.81 9.2L1.86 11.15C1.54 11.46 1.76 12 2.21 12H4C4 16.42 7.58 20 12 20C13.46 20 14.82 19.63 16 18.97L13.93 16.9C13.31 17.28 12.68 17.5 12 17.5C8.97 17.5 6.5 15.03 6.5 12H4.21C3.76 12 3.54 11.46 3.86 11.15ZM15.97 11.03C15.49 9.27 13.94 8 12 8C9.79 8 8 9.79 8 12C8 13.94 9.27 15.49 11.03 15.97L13.61 13.39V13.38C12.89 13.76 12.02 13.63 11.45 13.05C10.67 12.26 10.67 10.97 11.45 10.19C12.23 9.4 13.53 9.4 14.31 10.19C14.89 10.77 15.02 11.64 14.64 12.36H14.65L15.97 11.03ZM22 12C22 7.58 18.42 4 14 4V5.79C14 6.24 13.46 6.46 13.15 6.14L11.2 4.19C11.1 4.09 11.1 3.92 11.2 3.81L13.15 1.86C13.46 1.54 14 1.76 14 2.21V4C18.42 4 22 7.58 22 12C22 13.46 21.63 14.82 20.97 16L19.38 14.41C19.76 13.7 20 12.87 20 12ZM20 12H21.79C22.24 12 22.46 12.54 22.14 12.85L20.19 14.8C20.09 14.9 19.92 14.9 19.82 14.8L17.86 12.85C17.54 12.54 17.76 12 18.21 12H20Z"
+                            fill="currentColor" />
+                    </svg>
+                </button>
+                <button id="reset-camera" title="重置视角">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 5V1L7 6L12 11V7C15.31 7 18 9.69 18 13C18 16.31 15.31 19 12 19C8.69 19 6 16.31 6 13H4C4 17.42 7.58 21 12 21C16.42 21 20 17.42 20 13C20 8.58 16.42 5 12 5Z"
+                            fill="currentColor" />
+                    </svg>
+                </button>
+                <button id="theme-toggle" title="切换主题">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7ZM12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9ZM12 2L14.39 5.42C13.65 5.15 12.84 5 12 5C11.16 5 10.35 5.15 9.61 5.42L12 2ZM3.34 7L7.5 6.65C6.9 7.16 6.36 7.78 5.94 8.5C5.5 9.24 5.25 10 5.11 10.79L3.34 7ZM3.36 17L5.12 13.23C5.26 14 5.53 14.78 5.95 15.5C6.37 16.22 6.91 16.84 7.5 17.35L3.36 17ZM20.65 7L18.88 10.79C18.74 10 18.47 9.23 18.05 8.5C17.63 7.78 17.1 7.15 16.5 6.64L20.65 7ZM20.64 17L16.5 17.36C17.09 16.85 17.62 16.22 18.04 15.5C18.46 14.77 18.73 14 18.87 13.21L20.64 17ZM12 22L9.59 18.56C10.33 18.83 11.14 19 12 19C12.82 19 13.63 18.83 14.37 18.56L12 22Z"
+                            fill="currentColor" />
+                    </svg>
+                </button>
+                <button id="fullscreen" title="全屏显示">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M7 14H5V19H10V17H7V14ZM5 10H7V7H10V5H5V10ZM17 17H14V19H19V14H17V17ZM14 5V7H17V10H19V5H14Z"
+                            fill="currentColor" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- 全屏提示 -->
+            <div class="fullscreen-hint">
+                按F键可切换全屏
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
