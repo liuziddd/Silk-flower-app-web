@@ -298,10 +298,13 @@
     <!-- 社区区 -->
     <section
       id="community-section"
-      class="w-full py-12 md:py-16 pt-20 theme-gradient-bg"
+      class="w-full py-12 md:py-16 pt-20 md:pt-24 theme-gradient-bg"
       v-if="isCommunityPage"
     >
       <div class="max-w-6xl px-4 mx-auto">
+        <!-- 添加额外的占位符div，确保内容不被导航栏遮挡 -->
+        <div class="h-16 md:h-0"></div>
+        
         <div class="mb-8 md:mb-10 text-center">
           <h2 class="mb-3 text-3xl md:text-4xl font-bold gradient-heading">加入我们的社区</h2>
           <p class="mb-4 text-base md:text-lg">
@@ -309,181 +312,83 @@
           </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- 左侧：论坛讨论区 -->
-          <div class="p-4 md:p-6 rounded-lg bg-zinc-800 bg-opacity-60">
-            <h3 class="mb-4 text-xl md:text-2xl font-bold text-center theme-gold">
-              绢花爱好者论坛
-            </h3>
-            <div
-              class="h-64 md:h-[500px] overflow-y-auto border border-zinc-600 rounded-lg forumHeight"
-            >
-              <!-- 论坛内容模拟 -->
-              <div class="p-4">
-                <div class="mb-6 pb-4 border-b border-zinc-700">
-                  <div class="flex items-center mb-2">
-                    <div
-                      class="w-8 h-8 bg-amber-600 rounded-full flex items-center justify-center text-white mr-2"
-                    >
-                      L
-                    </div>
-                    <span class="font-semibold">李小花</span>
-                    <span class="ml-2 text-xs text-gray-400">3小时前</span>
-                  </div>
-                  <p>
-                    最近尝试了古风绢花发簪的制作，大家有什么好的建议吗？
-                  </p>
-                  <div class="mt-2 flex items-center">
-                    <button class="mr-4 text-sm flex items-center">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-4 w-4 mr-1"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"
-                        />
-                      </svg>
-                      24
-                    </button>
-                    <button class="text-sm flex items-center">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-4 w-4 mr-1"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-                        />
-                      </svg>
-                      8
-                    </button>
-                  </div>
-                </div>
-                <!-- 更多论坛帖子... 省略其他类似结构 -->
-              </div>
-            </div>
-            <div class="mt-4 text-center">
-              <button
-                class="px-6 py-2 text-white bg-amber-600 rounded hover:bg-amber-500 transition"
-              >
-                查看更多讨论
-              </button>
-            </div>
+        <!-- 百度贴吧嵌入 - 恢复但优化为响应式 -->
+        <div class="overflow-hidden bg-white rounded-lg shadow-xl">
+          <div
+            class="p-4 text-white"
+            :style="{ background: 'var(--beijinghua-gradient-amber)' }"
+          >
+            <h3 class="text-xl font-bold">绢花爱好者社区</h3>
+            <p class="text-sm">分享您的作品、交流技艺、寻找灵感</p>
           </div>
 
-          <!-- 右侧：作品展示区 -->
-          <div class="p-4 md:p-6 rounded-lg bg-zinc-800 bg-opacity-60">
-            <h3 class="mb-4 text-xl md:text-2xl font-bold text-center theme-gold">
-              社区作品展示
-            </h3>
-            <div class="grid grid-cols-2 gap-3">
-              <div class="aspect-square overflow-hidden rounded-lg">
-                <img
-                  src="/images/r7jkpul05mdl_0.jpg"
-                  class="w-full h-full object-cover transition hover:scale-110"
-                  alt="社区作品"
-                />
-              </div>
-              <div class="aspect-square overflow-hidden rounded-lg">
-                <img
-                  src="/images/ear-drop.jpg"
-                  class="w-full h-full object-cover transition hover:scale-110"
-                  alt="社区作品"
-                />
-              </div>
-              <div class="aspect-square overflow-hidden rounded-lg">
-                <img
-                  src="/images/bracelet-new.jpg"
-                  class="w-full h-full object-cover transition hover:scale-110"
-                  alt="社区作品"
-                />
-              </div>
-              <div class="aspect-square overflow-hidden rounded-lg">
-                <img
-                  src="/images/brooch-new.jpg"
-                  class="w-full h-full object-cover transition hover:scale-110"
-                  alt="社区作品"
-                />
-              </div>
-            </div>
-            <div class="mt-4 text-center">
-              <button
-                class="px-6 py-2 text-white bg-amber-600 rounded hover:bg-amber-500 transition"
-              >
-                分享我的作品
-              </button>
-            </div>
-          </div>
+          <!-- 百度贴吧嵌入iframe - 添加响应式高度 -->
+          <iframe
+            id="tieba-embed-frame"
+            class="w-full"
+            style="height: 60vh; min-height: 400px;"
+            src="https://tieba.baidu.com/f?kw=绢花"
+            frameborder="0"
+          ></iframe>
         </div>
 
-        <!-- 社区活动 -->
-        <div class="mt-8 md:mt-10 p-4 md:p-6 rounded-lg bg-zinc-800 bg-opacity-60">
-          <h3 class="mb-4 text-xl md:text-2xl font-bold text-center theme-gold">
-            即将举办的活动
-          </h3>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-            <div class="p-3 md:p-4 bg-zinc-700 bg-opacity-60 rounded-lg">
-              <h4 class="font-bold mb-2">绢花制作工作坊</h4>
-              <p class="text-sm">
-                学习基础的绢花制作技巧，适合初学者参加。
-              </p>
-              <p class="text-xs text-gray-300 mt-2">
-                时间：2023年11月15日 14:00-16:00
-              </p>
-              <button
-                class="mt-2 px-4 py-1 text-sm text-white bg-amber-600 rounded hover:bg-amber-500 transition w-full"
-              >
-                报名参加
-              </button>
-            </div>
-            <div class="p-3 md:p-4 bg-zinc-700 bg-opacity-60 rounded-lg">
-              <h4 class="font-bold mb-2">绢花设计大赛</h4>
-              <p class="text-sm">向社区展示您的绢花创意，赢取丰厚奖品。</p>
-              <p class="text-xs text-gray-300 mt-2">
-                截止日期：2023年12月10日
-              </p>
-              <button
-                class="mt-2 px-4 py-1 text-sm text-white bg-amber-600 rounded hover:bg-amber-500 transition w-full"
-              >
-                了解详情
-              </button>
-            </div>
-            <div class="p-3 md:p-4 bg-zinc-700 bg-opacity-60 rounded-lg">
-              <h4 class="font-bold mb-2">线上花艺讲座</h4>
-              <p class="text-sm">
-                知名花艺设计师分享绢花创作经验和设计理念。
-              </p>
-              <p class="text-xs text-gray-300 mt-2">
-                时间：2023年11月25日 19:30-21:00
-              </p>
-              <button
-                class="mt-2 px-4 py-1 text-sm text-white bg-amber-600 rounded hover:bg-amber-500 transition w-full"
-              >
-                预约观看
-              </button>
-            </div>
+        <!-- 社区活动部分 -->
+        <div class="grid grid-cols-1 gap-6 mt-8 md:mt-12 md:grid-cols-3">
+          <div
+            class="p-4 md:p-6 transition-transform rounded-lg shadow-lg bg-zinc-800 hover:scale-105"
+          >
+            <h3 class="mb-3 text-xl font-bold text-amber-400">每月作品展示</h3>
+            <p class="mb-4 text-sm md:text-base">
+              上传您的绢花作品，有机会被选为月度精选，并获得专属奖励。
+            </p>
+            <button
+              class="w-full md:w-auto px-4 py-2 transition rounded-lg theme-btn"
+            >
+              查看本月作品
+            </button>
+          </div>
+
+          <div
+            class="p-4 md:p-6 transition-transform rounded-lg shadow-lg bg-zinc-800 hover:scale-105"
+          >
+            <h3 class="mb-3 text-xl font-bold text-amber-400">线上工艺课堂</h3>
+            <p class="mb-4 text-sm md:text-base">
+              参与我们的线上课程，向绢花大师学习传统与创新技艺。
+            </p>
+            <button
+              class="w-full md:w-auto px-4 py-2 transition rounded-lg theme-btn"
+            >
+              查看课程安排
+            </button>
+          </div>
+
+          <div
+            class="p-4 md:p-6 transition-transform rounded-lg shadow-lg bg-zinc-800 hover:scale-105"
+          >
+            <h3 class="mb-3 text-xl font-bold text-amber-400">创意挑战赛</h3>
+            <p class="mb-4 text-sm md:text-base">
+              参与主题创作挑战，展示您的创意，赢取丰厚奖品。
+            </p>
+            <button
+              class="w-full md:w-auto px-4 py-2 transition rounded-lg theme-btn"
+            >
+              查看当前挑战
+            </button>
           </div>
         </div>
       </div>
     </section>
-    <!-- 定制区 -->
+
+    <!-- AI定制区 -->
     <section
       id="ai-design-section"
-      class="w-full py-10 section-container theme-gradient-bg"
+      class="w-full py-12 md:py-16 pt-20 md:pt-24 theme-gradient-bg"
       v-if="isCustomPage"
-    >   
-
+    >
+      <!-- 添加额外的占位符div，确保内容不被导航栏遮挡 -->
+      <div class="h-16 md:h-0"></div>
+      
+      <!-- 以下是AI定制区的内容，保持不变 -->
       <div class="max-w-6xl px-4 mx-auto">
         <div class="mb-10 text-center">
           <h2 class="mb-6 text-4xl font-bold gradient-heading">设计您的专属绢花</h2>
@@ -725,16 +630,21 @@
       </div>
     </section>
     
-    <!-- VR 3D模型展示区 -->
+    <!-- VR/3D模型区 -->
     <section
       id="vr-section"
-      class="w-full py-20 theme-gradient-bg"
+      class="w-full py-12 md:py-16 pt-20 md:pt-24 theme-gradient-bg"
       v-if="isVRPage"
     >
-      <div class="max-w-7xl px-4 mx-auto">
-        <div class="mb-10 text-center">
-          <h2 class="mb-3 text-4xl font-bold gradient-heading">绢花3D展示</h2>
-          <p class="text-lg mb-4">通过3D技术，探索绢花的精美细节和立体结构。</p>
+      <!-- 添加额外的占位符div，确保内容不被导航栏遮挡 -->
+      <div class="h-16 md:h-0"></div>
+      
+      <div class="max-w-6xl px-4 mx-auto">
+        <div class="mb-8 md:mb-10 text-center">
+          <h2 class="mb-4 text-3xl md:text-4xl font-bold gradient-heading">3D绢花模型</h2>
+          <p class="mb-6 text-base md:text-lg">
+            使用最新的3D技术，让您在虚拟环境中感受绢花的精美细节。
+          </p>
         </div>
         
         <!-- 3D模型查看器iframe -->
