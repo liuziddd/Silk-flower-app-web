@@ -2,20 +2,32 @@
   <div class="w-full overflow-hidden bg-zinc-900" :class="{'dark': isDarkMode, 'light': !isDarkMode}">
     <!-- 固定导航栏 -->
     <nav class="fixed top-0 left-0 right-0 z-50 w-full shadow-lg">
-      <div class="flex items-center justify-between px-8 py-4">
-        <div class="flex items-center">
-          <span class="text-xl font-bold gradient-heading">🌸花小绢·绢花品牌</span>
-          <span class="text-sm text-gray-400 font-bold">(DESIGNED BY LIUYOUXU)</span>
-          <button @click="toggleTheme" class="ml-2 p-1 rounded-full transition-all duration-300 hover:bg-zinc-800 focus:outline-none" title="切换主题">
-            <svg v-if="isDarkMode" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-            </svg>
-            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-            </svg>
-          </button>
+      <div class="flex flex-col md:flex-row items-center justify-between px-4 md:px-8 py-4">
+        <div class="flex items-center w-full md:w-auto justify-between">
+          <div class="flex items-center">
+            <span class="text-xl font-bold gradient-heading">🌸花小绢·绢花品牌</span>
+            <span class="hidden md:inline text-sm text-gray-400 font-bold ml-2">(DESIGNED BY LIUYOUXU)</span>
+          </div>
+          <div class="flex items-center md:hidden">
+            <button @click="toggleTheme" class="ml-2 p-1 rounded-full transition-all duration-300 hover:bg-zinc-800 focus:outline-none" title="切换主题">
+              <svg v-if="isDarkMode" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+              <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            </button>
+            <button @click="mobileMenuOpen = !mobileMenuOpen" class="p-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path v-if="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
         </div>
-        <ul class="flex space-x-6">
+        
+        <!-- 桌面菜单 -->
+        <ul class="hidden md:flex space-x-6">
           <li>
             <a
               href="#"
@@ -91,32 +103,128 @@
               3D模型
             </a>
           </li>
+          <li>
+            <button @click="toggleTheme" class="p-1 rounded-full transition-all duration-300 hover:bg-zinc-800 focus:outline-none" title="切换主题">
+              <svg v-if="isDarkMode" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+              <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+              </svg>
+            </button>
+          </li>
         </ul>
+        
+        <!-- 移动菜单 -->
+        <div v-if="mobileMenuOpen" class="absolute top-full left-0 w-full bg-zinc-900 shadow-lg md:hidden py-2">
+          <ul class="flex flex-col space-y-2 px-4">
+            <li class="py-2 border-b border-zinc-700">
+              <a
+                href="#"
+                :class="{ 'font-bold theme-brand-gradient': isHomePage, 'transition hover:text-blue-400': !isHomePage }"
+                @click="
+                  isHomePage = true;
+                  isProductPage = false;
+                  isCommunityPage = false;
+                  isCustomPage = false;
+                  isVRPage = false;
+                  mobileMenuOpen = false;
+                "
+              >
+                首页
+              </a>
+            </li>
+            <li class="py-2 border-b border-zinc-700">
+              <a
+                href="#product-section"
+                :class="{ 'font-bold theme-brand-gradient': isProductPage, 'transition hover:text-blue-400': !isProductPage }"
+                @click="
+                  isHomePage = false;
+                  isProductPage = true;
+                  isCommunityPage = false;
+                  isCustomPage = false;
+                  isVRPage = false;
+                  mobileMenuOpen = false;
+                "
+              >
+                产品
+              </a>
+            </li>
+            <li class="py-2 border-b border-zinc-700">
+              <a
+                href="#community-section"
+                :class="{ 'font-bold theme-brand-gradient': isCommunityPage, 'transition hover:text-blue-400': !isCommunityPage }"
+                @click="
+                  isHomePage = false;
+                  isProductPage = false;
+                  isCommunityPage = true;
+                  isCustomPage = false;
+                  isVRPage = false;
+                  mobileMenuOpen = false;
+                "
+              >
+                社区
+              </a>
+            </li>
+            <li class="py-2 border-b border-zinc-700">
+              <a
+                href="#"
+                :class="{ 'font-bold theme-brand-gradient': isCustomPage, 'transition hover:text-blue-400': !isCustomPage }"
+                @click="
+                  isHomePage = false;
+                  isProductPage = false;
+                  isCommunityPage = false;
+                  isCustomPage = true;
+                  isVRPage = false;
+                  mobileMenuOpen = false;
+                "
+              >
+                AI定制
+              </a>
+            </li>
+            <li class="py-2">
+              <a
+                href="#vr-section"
+                :class="{ 'font-bold theme-brand-gradient': isVRPage, 'transition hover:text-blue-400': !isVRPage }"
+                @click="
+                  isHomePage = false;
+                  isProductPage = false;
+                  isCommunityPage = false;
+                  isCustomPage = false;
+                  isVRPage = true;
+                  mobileMenuOpen = false;
+                "
+              >
+                3D模型
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     </nav>
     <!-- 主区域 -->
 <section
-  class="flex flex-col items-stretch w-full min-h-screen mt-0 md:flex-row theme-gradient-bg"
+  class="flex flex-col items-stretch w-full min-h-screen pt-16 md:pt-0 mt-0 md:flex-row theme-gradient-bg"
   v-if="isHomePage"
 >
   <div
-    class="w-full bg-center bg-cover md:w-1/2"
+    class="w-full h-64 md:h-auto bg-center bg-cover md:w-1/2"
     :style="{ 'background-image': isDarkMode ? 'url(\'/images/首页1.jpg\')' : 'url(\'/images/首页2.jpeg\')' }"
   ></div>
   <div
-    class="flex flex-col justify-center w-full px-12 py-16 md:w-1/2 md:px-20"
+    class="flex flex-col justify-center w-full px-6 py-8 md:w-1/2 md:px-16 md:py-16"
   >
-    <h1 class="mb-6 text-6xl font-bold gradient-heading">绢语·华彩</h1>
-    <p class="mb-8 text-2xl font-bold">
+    <h1 class="mb-4 text-4xl md:text-6xl font-bold gradient-heading">绢语·华彩</h1>
+    <p class="mb-4 md:mb-8 text-xl md:text-2xl font-bold">
       融合传统工艺与现代设计，探索你的专属之美
     </p>
-    <p class="mb-8 text-sm text-left font-microsoftYaHei">
+    <p class="mb-6 md:mb-8 text-sm text-left font-microsoftYaHei">
       <div
-        class="relative block p-4 transition-all rounded-lg shadow-lg cursor-pointer hover:scale-105 group"
+        class="relative block p-3 md:p-4 transition-all rounded-lg shadow-lg cursor-pointer hover:scale-105 group"
         :style="{ background: 'var(--beijinghua-gradient-card)' }"
         @click="openMuseumWindow"
       >
-        <span class="transition-colors group-hover:text-black pb-6 block">
+        <span class="transition-colors text-sm md:text-base group-hover:text-black pb-6 block">
           绢花工艺，作为中国传统工艺之一，经过千年的传承与创新，融合了细腻的手工技巧和丰富的文化内涵。每一朵绢花都凝聚了艺术家的心血与创意，不仅是美的象征，更承载着深厚的文化底蕴。<br />
           绢花的制作工艺源远流长，早在汉代便已萌芽，而到了唐宋时期，绢花工艺达到了顶峰。如今，绢花不仅用于装饰，也常被用于礼仪场合、婚礼和传统节庆中，象征着美好与祝福。每一朵绢花都是匠人们辛勤创作的结晶，它们通过精湛的技艺将丝绸的柔美与自然的生命力巧妙结合，展现了工艺与艺术的完美融合。
         </span>
@@ -128,7 +236,7 @@
       </div>
     </p>
     <button
-      class="theme-btn px-6 py-3 text-xl font-bold transition-all transform rounded-full shadow-lg font-microsoftYaHei hover:scale-110 hover:shadow-2xl"
+      class="theme-btn px-6 py-3 text-lg md:text-xl font-bold transition-all transform rounded-full shadow-lg font-microsoftYaHei hover:scale-110 hover:shadow-2xl"
       @click="
         isHomePage = false;
         isProductPage = true;
@@ -142,20 +250,20 @@
     <!-- 产品区 -->
     <section
       id="product-section"
-      class="flex flex-col items-stretch w-full py-20 theme-gradient-bg"
+      class="flex flex-col items-stretch w-full py-12 md:py-20 pt-20 theme-gradient-bg"
       v-if="isProductPage"
     >
-      <div class="flex flex-col justify-center w-full px-12 md:px-16">
-        <h2 class="mb-4 text-4xl font-bold gradient-heading">绢花工艺</h2>
-        <p class="text-lg">
+      <div class="flex flex-col justify-center w-full px-6 md:px-12">
+        <h2 class="mb-4 text-3xl md:text-4xl font-bold gradient-heading">绢花工艺</h2>
+        <p class="text-base md:text-lg">
           绢花工艺源于千年历史，结合现代设计，为您带来前所未有的美感体验。
         </p>
         <!-- 修改后的按钮容器 -->
-        <div class="flex justify-center w-full mt-6 space-x-6">
+        <div class="flex flex-wrap justify-center w-full mt-6 space-y-4 md:space-y-0 space-x-0 md:space-x-6">
           <a
             href="https://shop.jd.com/your-shop-id.html"
             target="_blank"
-            class="theme-btn px-6 py-3 text-xl font-bold transition-all transform rounded-full shadow-lg hover:scale-110 hover:shadow-2xl"
+            class="theme-btn w-full md:w-auto px-6 py-3 text-lg md:text-xl font-bold transition-all transform rounded-full shadow-lg hover:scale-110 hover:shadow-2xl mb-4 md:mb-0"
             style="border-radius: 25px"
           >
             查看京东店铺
@@ -163,7 +271,7 @@
           <a
             href="https://shop.taobao.com/your-shop-id.html"
             target="_blank"
-            class="theme-btn px-6 py-3 text-xl font-bold transition-all transform rounded-full shadow-lg hover:scale-110 hover:shadow-2xl"
+            class="theme-btn w-full md:w-auto px-6 py-3 text-lg md:text-xl font-bold transition-all transform rounded-full shadow-lg hover:scale-110 hover:shadow-2xl"
             style="border-radius: 25px"
           >
             查看淘宝店铺
@@ -172,7 +280,7 @@
       </div>
       <!-- 修改后的产品展示容器 - 使用单一数组 -->
       <div
-        class="grid w-full grid-cols-2 gap-6 px-8 mt-8 sm:grid-cols-3 md:grid-cols-6"
+        class="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6 px-4 md:px-8 mt-8"
       >
         <a
           v-for="(product, idx) in allProducts"
@@ -181,7 +289,7 @@
           target="_blank"
           class="p-2 transition-transform shadow-lg cursor-pointer rounded-xl hover:scale-105 product-card"
         >
-          <img :src="product.image" class="mb-4 rounded-lg" />
+          <img :src="product.image" class="w-full object-cover h-36 md:h-auto mb-4 rounded-lg" />
           <h3 class="font-semibold theme-gold">{{ product.name }}</h3>
           <p class="text-sm text-gray-300">{{ product.description }}</p>
         </a>
@@ -190,77 +298,181 @@
     <!-- 社区区 -->
     <section
       id="community-section"
-      class="w-full py-16 theme-gradient-bg"
+      class="w-full py-12 md:py-16 pt-20 theme-gradient-bg"
       v-if="isCommunityPage"
     >
       <div class="max-w-6xl px-4 mx-auto">
-        <div class="mb-10 text-center">
-          <h2 class="mb-3 text-4xl font-bold gradient-heading">加入我们的社区</h2>
-          <p class="mb-4 text-lg">
+        <div class="mb-8 md:mb-10 text-center">
+          <h2 class="mb-3 text-3xl md:text-4xl font-bold gradient-heading">加入我们的社区</h2>
+          <p class="mb-4 text-base md:text-lg">
             在这里，您可以分享您的绢花创意，与其他爱好者交流。
           </p>
         </div>
 
-        <!-- 百度贴吧嵌入 -->
-        <div class="overflow-hidden bg-white rounded-lg shadow-xl">
-          <div
-            class="p-4 text-white"
-            :style="{ background: 'var(--beijinghua-gradient-amber)' }"
-          >
-            <h3 class="text-xl font-bold">绢花爱好者社区</h3>
-            <p class="text-sm">分享您的作品、交流技艺、寻找灵感</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- 左侧：论坛讨论区 -->
+          <div class="p-4 md:p-6 rounded-lg bg-zinc-800 bg-opacity-60">
+            <h3 class="mb-4 text-xl md:text-2xl font-bold text-center theme-gold">
+              绢花爱好者论坛
+            </h3>
+            <div
+              class="h-64 md:h-[500px] overflow-y-auto border border-zinc-600 rounded-lg forumHeight"
+            >
+              <!-- 论坛内容模拟 -->
+              <div class="p-4">
+                <div class="mb-6 pb-4 border-b border-zinc-700">
+                  <div class="flex items-center mb-2">
+                    <div
+                      class="w-8 h-8 bg-amber-600 rounded-full flex items-center justify-center text-white mr-2"
+                    >
+                      L
+                    </div>
+                    <span class="font-semibold">李小花</span>
+                    <span class="ml-2 text-xs text-gray-400">3小时前</span>
+                  </div>
+                  <p>
+                    最近尝试了古风绢花发簪的制作，大家有什么好的建议吗？
+                  </p>
+                  <div class="mt-2 flex items-center">
+                    <button class="mr-4 text-sm flex items-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-4 w-4 mr-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"
+                        />
+                      </svg>
+                      24
+                    </button>
+                    <button class="text-sm flex items-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-4 w-4 mr-1"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                        />
+                      </svg>
+                      8
+                    </button>
+                  </div>
+                </div>
+                <!-- 更多论坛帖子... 省略其他类似结构 -->
+              </div>
+            </div>
+            <div class="mt-4 text-center">
+              <button
+                class="px-6 py-2 text-white bg-amber-600 rounded hover:bg-amber-500 transition"
+              >
+                查看更多讨论
+              </button>
+            </div>
           </div>
 
-          <!-- 百度贴吧嵌入iframe -->
-          <iframe
-            id="tieba-embed-frame"
-            class="w-full"
-            style="height: 800px"
-            src="https://tieba.baidu.com/f?kw=绢花"
-            frameborder="0"
-          ></iframe>
+          <!-- 右侧：作品展示区 -->
+          <div class="p-4 md:p-6 rounded-lg bg-zinc-800 bg-opacity-60">
+            <h3 class="mb-4 text-xl md:text-2xl font-bold text-center theme-gold">
+              社区作品展示
+            </h3>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="aspect-square overflow-hidden rounded-lg">
+                <img
+                  src="/images/r7jkpul05mdl_0.jpg"
+                  class="w-full h-full object-cover transition hover:scale-110"
+                  alt="社区作品"
+                />
+              </div>
+              <div class="aspect-square overflow-hidden rounded-lg">
+                <img
+                  src="/images/ear-drop.jpg"
+                  class="w-full h-full object-cover transition hover:scale-110"
+                  alt="社区作品"
+                />
+              </div>
+              <div class="aspect-square overflow-hidden rounded-lg">
+                <img
+                  src="/images/bracelet-new.jpg"
+                  class="w-full h-full object-cover transition hover:scale-110"
+                  alt="社区作品"
+                />
+              </div>
+              <div class="aspect-square overflow-hidden rounded-lg">
+                <img
+                  src="/images/brooch-new.jpg"
+                  class="w-full h-full object-cover transition hover:scale-110"
+                  alt="社区作品"
+                />
+              </div>
+            </div>
+            <div class="mt-4 text-center">
+              <button
+                class="px-6 py-2 text-white bg-amber-600 rounded hover:bg-amber-500 transition"
+              >
+                分享我的作品
+              </button>
+            </div>
+          </div>
         </div>
 
-        <!-- 社区活动部分 -->
-        <div class="grid grid-cols-1 gap-6 mt-12 md:grid-cols-3">
-          <div
-            class="p-6 transition-transform rounded-lg shadow-lg bg-zinc-800 hover:scale-105"
-          >
-            <h3 class="mb-3 text-xl font-bold text-amber-400">每月作品展示</h3>
-            <p class="mb-4">
-              上传您的绢花作品，有机会被选为月度精选，并获得专属奖励。
-            </p>
-            <button
-              class="px-4 py-2 transition rounded-lg theme-btn"
-            >
-              查看本月作品
-            </button>
-          </div>
-
-          <div
-            class="p-6 transition-transform rounded-lg shadow-lg bg-zinc-800 hover:scale-105"
-          >
-            <h3 class="mb-3 text-xl font-bold text-amber-400">线上工艺课堂</h3>
-            <p class="mb-4">
-              参与我们的线上课程，向绢花大师学习传统与创新技艺。
-            </p>
-            <button
-              class="px-4 py-2 transition rounded-lg theme-btn"
-            >
-              查看课程安排
-            </button>
-          </div>
-
-          <div
-            class="p-6 transition-transform rounded-lg shadow-lg bg-zinc-800 hover:scale-105"
-          >
-            <h3 class="mb-3 text-xl font-bold text-amber-400">创意挑战赛</h3>
-            <p class="mb-4">参与主题创作挑战，展示您的创意，赢取丰厚奖品。</p>
-            <button
-              class="px-4 py-2 transition rounded-lg theme-btn"
-            >
-              查看当前挑战
-            </button>
+        <!-- 社区活动 -->
+        <div class="mt-8 md:mt-10 p-4 md:p-6 rounded-lg bg-zinc-800 bg-opacity-60">
+          <h3 class="mb-4 text-xl md:text-2xl font-bold text-center theme-gold">
+            即将举办的活动
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            <div class="p-3 md:p-4 bg-zinc-700 bg-opacity-60 rounded-lg">
+              <h4 class="font-bold mb-2">绢花制作工作坊</h4>
+              <p class="text-sm">
+                学习基础的绢花制作技巧，适合初学者参加。
+              </p>
+              <p class="text-xs text-gray-300 mt-2">
+                时间：2023年11月15日 14:00-16:00
+              </p>
+              <button
+                class="mt-2 px-4 py-1 text-sm text-white bg-amber-600 rounded hover:bg-amber-500 transition w-full"
+              >
+                报名参加
+              </button>
+            </div>
+            <div class="p-3 md:p-4 bg-zinc-700 bg-opacity-60 rounded-lg">
+              <h4 class="font-bold mb-2">绢花设计大赛</h4>
+              <p class="text-sm">向社区展示您的绢花创意，赢取丰厚奖品。</p>
+              <p class="text-xs text-gray-300 mt-2">
+                截止日期：2023年12月10日
+              </p>
+              <button
+                class="mt-2 px-4 py-1 text-sm text-white bg-amber-600 rounded hover:bg-amber-500 transition w-full"
+              >
+                了解详情
+              </button>
+            </div>
+            <div class="p-3 md:p-4 bg-zinc-700 bg-opacity-60 rounded-lg">
+              <h4 class="font-bold mb-2">线上花艺讲座</h4>
+              <p class="text-sm">
+                知名花艺设计师分享绢花创作经验和设计理念。
+              </p>
+              <p class="text-xs text-gray-300 mt-2">
+                时间：2023年11月25日 19:30-21:00
+              </p>
+              <button
+                class="mt-2 px-4 py-1 text-sm text-white bg-amber-600 rounded hover:bg-amber-500 transition w-full"
+              >
+                预约观看
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -598,7 +810,7 @@
     </footer>
 
     <!-- 花小绢聊天组件 - 更新后的完整版本 -->
-    <div class="fixed z-50 bottom-6 right-6">
+    <div class="fixed z-50 bottom-4 md:bottom-6 right-4 md:right-6">
       <!-- 聊天头像按钮 -->
       <div 
         @click="toggleChatWindow" 
@@ -616,7 +828,7 @@
       <!-- 聊天窗口 -->
       <div 
         v-if="isChatOpen" 
-        class="absolute right-0 chat-window bottom-20"
+        class="absolute right-0 chat-window bottom-16 md:bottom-20"
       >
         <!-- 聊天窗口头部 - 简化版 -->
         <div class="chat-header">
@@ -647,7 +859,7 @@
               <p class="mt-1 text-xs">有关绢花工艺的问题，花小绢都能回答哦~</p>
             </div>
           </div>
-          <div v-for="(message, index) in chatMessages" :key="index" class="mb-3">
+          <div v-for="(message, index) in chatMessages" :key="index" class="mb-3 px-2 md:px-3">
             <div 
               v-if="message.sender === 'bot'" 
               class="bot-message"
@@ -655,18 +867,18 @@
               <div class="message-avatar">
                 <img :src="`/biaoqing/${message.mood || '热情'}.png`" class="w-full h-full" alt="花小绢" />
               </div>
-              <div class="message-content text-left">{{ message.text }}</div>
+              <div class="message-content text-left text-sm md:text-base">{{ message.text }}</div>
             </div>
             <div 
               v-else 
               class="user-message"
             >
-              <div class="message-content text-left">
+              <div class="message-content text-left text-sm md:text-base">
                 {{ message.text }}
               </div>
             </div>
           </div>
-          <div v-if="isTyping" class="mt-2 bot-message">
+          <div v-if="isTyping" class="mt-2 bot-message px-2 md:px-3">
             <div class="message-avatar">
               <img :src="`/biaoqing/认真.png`" class="w-full h-full" alt="花小绢" />
             </div>
@@ -682,13 +894,13 @@
             v-model="userInput" 
             @keyup.enter="sendMessage"
             placeholder="和花小绢聊聊..." 
-            class="flex-1"
+            class="flex-1 text-sm md:text-base"
           />
           <button 
             @click="sendMessage" 
-            class="px-4 py-2 bg-amber-500 text-white rounded-r-lg hover:bg-amber-600"
+            class="px-3 md:px-4 py-2 bg-amber-500 text-white rounded-r-lg hover:bg-amber-600"
           >
-            S
+            发送
           </button>
         </div>
       </div>
@@ -917,6 +1129,7 @@ export default {
       modelLoadError: '',
       modelLoadProgress: 0,
       modelLoadTimeout: null,
+      mobileMenuOpen: false,
     };
   },
   mounted() {

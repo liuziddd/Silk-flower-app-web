@@ -169,8 +169,8 @@ html {
 
 /* 花小绢聊天窗口样式 */
 .chat-avatar {
-  width: 4rem;
-  height: 4rem;
+  width: 3.5rem;
+  height: 3.5rem;
   border-radius: 50%;
   overflow: hidden;
   cursor: pointer;
@@ -179,16 +179,23 @@ html {
   background: linear-gradient(135deg, #efc7d9, #e5918a);
 }
 
+@media (min-width: 768px) {
+  .chat-avatar {
+    width: 4rem;
+    height: 4rem;
+  }
+}
+
 .chat-avatar:hover {
   transform: scale(1.1);
 }
 
 /* 更宽的聊天窗口 */
 .chat-window {
-  width: 24rem;
-  /* 原来是20rem，增加到24rem */
-  max-width: 90vw;
-  /* 在移动设备上限制最大宽度为视口宽度的90% */
+  width: 85vw;
+  max-width: 24rem;
+  height: 70vh;
+  max-height: 500px;
   border-radius: 0.75rem;
   overflow: hidden;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.2);
@@ -196,38 +203,27 @@ html {
   transition: all 0.3s ease-in-out;
 }
 
+@media (min-width: 768px) {
+  .chat-window {
+    width: 24rem;
+    height: 500px;
+  }
+}
+
 .chat-header {
   padding: 0.75rem;
-  background: linear-gradient(to right, #cc6600, #cc9900);
-  color: white;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to right, #2a5a7e, #1e3d5a);
+  color: white;
 }
 
-/* 聊天内容区域也相应增高 */
 .chat-messages {
-  height: 24rem;
-  /* 原来是20rem，增加到24rem */
-  padding: 0.75rem;
+  height: calc(100% - 110px);
   overflow-y: auto;
-  background-color: rgba(255, 255, 255, 0.9);
-  scrollbar-width: thin;
-  scrollbar-color: #cc6600 rgba(255, 255, 255, 0.1);
-}
-
-.chat-messages::-webkit-scrollbar {
-  width: 6px;
-}
-
-.chat-messages::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
-}
-
-.chat-messages::-webkit-scrollbar-thumb {
-  background-color: #cc6600;
-  border-radius: 3px;
+  padding: 0.75rem 0;
+  background-color: rgba(250, 250, 250, 0.9);
 }
 
 .bot-message {
@@ -394,11 +390,47 @@ html {
 
 /* 响应式调整 */
 @media (max-width: 640px) {
+  .section-container {
+    padding-top: 70px;
+  }
+
+  #ai-design-section,
+  #community-section {
+    padding-top: 70px;
+    margin-top: -20px;
+  }
+
   .chat-window {
-    width: 85vw;
-    /* 在小屏幕上使用视口宽度的85% */
-    right: 50%;
-    transform: translateX(50%);
+    right: 0;
+    bottom: 12px;
+    transform: translateX(0);
+  }
+
+  .bot-message .message-content,
+  .user-message .message-content {
+    max-width: 220px;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .chat-input input {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .chat-input button {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .chat-window {
+    width: 95vw;
+  }
+
+  .bot-message .message-content,
+  .user-message .message-content {
+    max-width: 200px;
+    padding: 0.5rem 0.7rem;
   }
 }
 
