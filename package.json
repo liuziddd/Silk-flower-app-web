@@ -10,8 +10,8 @@
     "dev": "vite",
     "server": "node api/server.js",
     "dev:server": "nodemon api/server.js",
-    "build": "npx vite build",
-    "vercel-build": "npx vite build",
+    "build": "node build-frontend.js",
+    "vercel-build": "node build-frontend.js",
     "start": "node api/server.js",
     "preview": "vite preview"
   },
