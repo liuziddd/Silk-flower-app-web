@@ -606,7 +606,7 @@
         :class="{'animate-pulse': hasNewMessage}"
       >
         <img 
-          :src="`../public/biaoqing/${currentMood}.png`" 
+          :src="`/biaoqing/${currentMood}.png`" 
           class="object-cover w-full h-full" 
           alt="花小绢" 
         />
@@ -621,7 +621,7 @@
         <!-- 聊天窗口头部 - 简化版 -->
         <div class="chat-header">
           <div class="flex items-center">
-            <img :src="`../public/biaoqing/${currentMood}.png`" class="w-8 h-8 mr-2 rounded-full" alt="花小绢" />
+            <img :src="`/biaoqing/${currentMood}.png`" class="w-8 h-8 mr-2 rounded-full" alt="花小绢" />
             <span class="font-bold">花小绢</span>
           </div>
           <div class="flex items-center">
@@ -653,7 +653,7 @@
               class="bot-message"
             >
               <div class="message-avatar">
-                <img :src="`../public/biaoqing/${message.mood || '热情'}.png`" class="w-full h-full" alt="花小绢" />
+                <img :src="`/biaoqing/${message.mood || '热情'}.png`" class="w-full h-full" alt="花小绢" />
               </div>
               <div class="message-content text-left">{{ message.text }}</div>
             </div>
@@ -668,7 +668,7 @@
           </div>
           <div v-if="isTyping" class="mt-2 bot-message">
             <div class="message-avatar">
-              <img :src="`../public/biaoqing/认真.png`" class="w-full h-full" alt="花小绢" />
+              <img :src="`/biaoqing/认真.png`" class="w-full h-full" alt="花小绢" />
             </div>
             <div class="message-content text-left">
               <span class="inline-block w-6 text-center animate-pulse">...</span>
