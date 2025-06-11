@@ -1,8 +1,9 @@
-// api/model-service-vercel.js - Vercel部署的3D模型信息服务
+// api/model-service-vercel.js - Vercel部署的3D模型服务，重定向到七牛云存储
 const express = require('express');
 const router = express.Router();
 const path = require('path');
 const fs = require('fs');
+const qiniuConfig = require('./qiniu-config');
 
 // 健康检查接口
 router.get('/3d/health', (req, res) => {
@@ -13,16 +14,18 @@ router.get('/3d/health', (req, res) => {
 
     res.json({
         status: 'ok',
-        message: '3D API服务信息版本正在运行',
+        message: '3D API服务正在运行',
         timestamp: new Date().toISOString(),
-        deployment: 'vercel'
+        deployment: 'vercel',
+        storage: '七牛云对象存储',
+        storageType: 'qiniu'
     });
 });
 
-// 3D模型信息接口
+// 3D模型访问接口 - 重定向到七牛云存储链接
 router.get('/3d/:filename', (req, res) => {
     const { filename } = req.params;
-    console.log(`[3D API] 请求模型信息: ${filename}`);
+    console.log(`[3D API] 请求模型文件: ${filename}`);
 
     // 安全检查 - 只允许特定文件
     const allowedFiles = ['red.fbx', 'pink.fbx', 'model.glb'];
@@ -34,52 +37,60 @@ router.get('/3d/:filename', (req, res) => {
         });
     }
 
-    // 尝试读取模型信息文件
-    const rootDir = path.resolve('./');
-    const infoPath = path.join(rootDir, 'private', '3d', 'model.json');
-
-    try {
-        // 确保文件存在
-        if (!fs.existsSync(infoPath)) {
-            return res.status(404).json({
-                success: false,
-                message: '模型信息文件不存在',
-                solution: '请检查部署是否正确包含模型信息文件'
-            });
-        }
-
-        // 读取模型信息
-        const fileContent = fs.readFileSync(infoPath, 'utf8');
-        const modelInfo = JSON.parse(fileContent);
-
-        // 找到对应文件的信息
-        const fileInfo = modelInfo.models.find(m => m.filename === filename) || {};
-
-        // 返回模型信息而不是实际文件
-        res.json({
-            success: true,
-            message: 'Vercel部署不提供实际3D模型文件，仅提供模型信息',
-            modelInfo: fileInfo,
-            deployment: {
-                environment: 'vercel',
-                recommendations: modelInfo.deployment.recommendations,
-                alternativeSolution: '请从专用存储服务或CDN加载模型文件'
-            }
-        });
-    } catch (error) {
-        console.error('读取模型信息时出错:', error);
-        res.status(500).json({
-            success: false,
-            message: '服务器内部错误',
-            error: error.message
-        });
+    // 如果是预设模型，使用配置中的URL
+    let modelKey = null;
+    if (filename === 'red.fbx') {
+        modelKey = 'red';
+    } else if (filename === 'pink.fbx') {
+        modelKey = 'pink';
     }
+
+    if (modelKey && qiniuConfig.getModelUrl) {
+        const modelUrl = qiniuConfig.getModelUrl(modelKey);
+        if (modelUrl) {
+            console.log(`[3D API Vercel] 重定向到七牛云URL: ${modelUrl}`);
+            return res.redirect(modelUrl);
+        }
+    }
+
+    // 如果找不到预设模型，尝试直接生成URL
+    const directUrl = `https://${qiniuConfig.cdnDomain}/${filename}`;
+    console.log(`[3D API Vercel] 重定向到直接URL: ${directUrl}`);
+    res.redirect(directUrl);
 });
 
 // 测试接口
 router.get('/3d/test', (req, res) => {
     res.setHeader('Content-Type', 'text/plain');
-    res.send('3D API信息服务测试成功! 注意：Vercel部署不提供实际3D模型文件，仅提供模型信息。');
+    res.send('3D API服务测试成功! 七牛云对象存储版本');
+});
+
+// 获取模型信息API，返回七牛云中模型的元数据
+router.get('/3d/info/:modelKey', (req, res) => {
+    const { modelKey } = req.params;
+
+    // 检查是否是有效的模型键
+    if (!qiniuConfig.models[modelKey]) {
+        return res.status(404).json({
+            success: false,
+            message: '请求的模型不存在'
+        });
+    }
+
+    const filename = qiniuConfig.models[modelKey];
+    const modelUrl = qiniuConfig.getModelUrl(modelKey);
+
+    // 返回模型元数据
+    res.json({
+        success: true,
+        modelKey,
+        filename,
+        url: modelUrl,
+        storage: '七牛云对象存储',
+        contentType: 'application/octet-stream',
+        accessType: '公开访问',
+        environment: 'vercel'
+    });
 });
 
 module.exports = router; 

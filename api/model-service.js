@@ -3,6 +3,8 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const fs = require('fs');
+const qiniuConfig = require('./qiniu-config');
+const crypto = require('crypto');
 
 // 健康检查接口 - 放在具体文件路由前面，避免被覆盖
 router.get('/3d/health', (req, res) => {
@@ -14,7 +16,8 @@ router.get('/3d/health', (req, res) => {
     res.json({
         status: 'ok',
         message: '3D API服务正在运行',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        storage: '七牛云对象存储'
     });
 });
 
@@ -25,10 +28,36 @@ router.get('/3d/test', (req, res) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET');
 
     res.setHeader('Content-Type', 'text/plain');
-    res.send('3D API测试响应成功！');
+    res.send('3D API测试响应成功！使用七牛云存储');
 });
 
-// 3D模型访问接口
+// 获取私有文件的临时访问URL
+function getPrivateDownloadUrl(key) {
+    // 检查配置是否正确设置
+    if (!qiniuConfig.accessKey || !qiniuConfig.secretKey) {
+        return null;
+    }
+
+    const domain = qiniuConfig.cdnDomain;
+    const baseUrl = `http://${domain}/${key}`;
+
+    // 计算过期时间（1小时后）
+    const deadline = Math.floor(Date.now() / 1000) + 3600;
+
+    // 构建待签名的字符串
+    const encodedKey = encodeURIComponent(key);
+    const signStr = `/huaxiaojuan/${key}?e=${deadline}`.replace('+', '%20');
+
+    // 使用HMAC-SHA1算法对字符串进行签名
+    const hmac = crypto.createHmac('sha1', qiniuConfig.secretKey);
+    hmac.update(signStr);
+    const encodedSign = hmac.digest('base64').replace(/\+/g, '-').replace(/\//g, '_');
+
+    // 构建最终的访问URL
+    return `http://${domain}/${key}?e=${deadline}&token=${qiniuConfig.accessKey}:${encodedSign}`;
+}
+
+// 3D模型访问接口 - 重定向到七牛云存储链接
 router.get('/3d/:filename', (req, res) => {
     const { filename } = req.params;
 
@@ -44,82 +73,53 @@ router.get('/3d/:filename', (req, res) => {
         });
     }
 
-    // 构建文件路径 - 指向私有目录
-    const rootDir = path.resolve('./');
-    const filePath = path.join(rootDir, 'private', '3d', filename);
-    console.log(`[3D API] 尝试访问文件路径: ${filePath}`);
+    // 如果是预设模型，使用配置中的URL
+    let modelKey = null;
+    if (filename === 'red.fbx') {
+        modelKey = 'red';
+    } else if (filename === 'pink.fbx') {
+        modelKey = 'pink';
+    }
 
-    // 检查文件是否存在
-    if (!fs.existsSync(filePath)) {
-        console.log(`[3D API] 文件不存在: ${filePath}`);
+    if (modelKey && qiniuConfig.getModelUrl) {
+        const modelUrl = qiniuConfig.getModelUrl(modelKey);
+        if (modelUrl) {
+            console.log(`[3D API] 重定向到七牛云URL: ${modelUrl}`);
+            return res.redirect(modelUrl);
+        }
+    }
+
+    // 如果找不到预设模型，尝试直接生成URL
+    const directUrl = `https://${qiniuConfig.cdnDomain}/${filename}`;
+    console.log(`[3D API] 重定向到直接URL: ${directUrl}`);
+    res.redirect(directUrl);
+});
+
+// 获取模型信息API，返回七牛云中模型的元数据
+router.get('/3d/info/:modelKey', (req, res) => {
+    const { modelKey } = req.params;
+
+    // 检查是否是有效的模型键
+    if (!qiniuConfig.models[modelKey]) {
         return res.status(404).json({
             success: false,
-            message: '请求的模型文件不存在'
+            message: '请求的模型不存在'
         });
     }
 
-    try {
-        const stat = fs.statSync(filePath);
-        const fileSize = stat.size;
+    const filename = qiniuConfig.models[modelKey];
+    const modelUrl = qiniuConfig.getModelUrl(modelKey);
 
-        // 设置CORS头
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET');
-        res.setHeader('Access-Control-Allow-Headers', 'Range, Content-Type');
-        res.setHeader('Accept-Ranges', 'bytes');
-
-        // 根据文件扩展名设置不同的Content-Type
-        const fileExt = path.extname(filename).toLowerCase();
-
-        if (fileExt === '.fbx') {
-            res.setHeader('Content-Type', 'application/octet-stream');
-        } else if (fileExt === '.glb') {
-            res.setHeader('Content-Type', 'model/gltf-binary');
-        } else {
-            res.setHeader('Content-Type', 'application/octet-stream');
-        }
-
-        // 检查是否为范围请求
-        const range = req.headers.range;
-        if (range) {
-            // 解析Range头
-            const parts = range.replace(/bytes=/, "").split("-");
-            const start = parseInt(parts[0], 10);
-            const end = parts[1] ? parseInt(parts[1], 10) : fileSize - 1;
-
-            // 计算实际发送的内容大小
-            const chunksize = (end - start) + 1;
-
-            // 创建文件流
-            const fileStream = fs.createReadStream(filePath, { start, end });
-
-            // 设置范围响应头
-            res.writeHead(206, {
-                'Content-Range': `bytes ${start}-${end}/${fileSize}`,
-                'Content-Length': chunksize,
-                'Content-Disposition': `inline; filename="${filename}"`,
-                'Cache-Control': 'public, max-age=86400' // 缓存1天
-            });
-
-            // 发送部分内容
-            fileStream.pipe(res);
-        } else {
-            // 正常请求 - 发送整个文件
-            res.setHeader('Content-Length', fileSize);
-            res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
-            res.setHeader('Cache-Control', 'public, max-age=86400'); // 缓存1天
-
-            // 发送文件
-            fs.createReadStream(filePath).pipe(res);
-        }
-    } catch (error) {
-        console.error('发送3D模型文件时出错:', error);
-        res.status(500).json({
-            success: false,
-            message: '服务器内部错误',
-            error: error.message
-        });
-    }
+    // 返回模型元数据
+    res.json({
+        success: true,
+        modelKey,
+        filename,
+        url: modelUrl,
+        storage: '七牛云对象存储',
+        contentType: 'application/octet-stream',
+        accessType: '公开访问'
+    });
 });
 
 module.exports = router; 
