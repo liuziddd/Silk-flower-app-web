@@ -13,11 +13,16 @@ router.get('/3d/health', (req, res) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
+    // 检查七牛云配置
+    const configStatus = qiniuConfig.accessKey && qiniuConfig.secretKey ? 'ok' : 'missing';
+
     res.json({
         status: 'ok',
         message: '3D API服务正在运行',
         timestamp: new Date().toISOString(),
-        storage: '七牛云对象存储'
+        storage: '七牛云对象存储',
+        storageConfig: configStatus,
+        cdn: qiniuConfig.cdnDomain
     });
 });
 
@@ -35,6 +40,7 @@ router.get('/3d/test', (req, res) => {
 function getPrivateDownloadUrl(key) {
     // 检查配置是否正确设置
     if (!qiniuConfig.accessKey || !qiniuConfig.secretKey) {
+        console.warn('七牛云密钥未配置，无法生成私有链接');
         return null;
     }
 
@@ -85,6 +91,12 @@ router.get('/3d/:filename', (req, res) => {
         const modelUrl = qiniuConfig.getModelUrl(modelKey);
         if (modelUrl) {
             console.log(`[3D API] 重定向到七牛云URL: ${modelUrl}`);
+
+            // 添加调试信息
+            res.setHeader('X-Debug-Storage', 'qiniu');
+            res.setHeader('X-Debug-CDN', qiniuConfig.cdnDomain);
+            res.setHeader('X-Debug-Model', modelKey);
+
             return res.redirect(modelUrl);
         }
     }
@@ -92,6 +104,12 @@ router.get('/3d/:filename', (req, res) => {
     // 如果找不到预设模型，尝试直接生成URL
     const directUrl = `https://${qiniuConfig.cdnDomain}/${filename}`;
     console.log(`[3D API] 重定向到直接URL: ${directUrl}`);
+
+    // 添加调试信息
+    res.setHeader('X-Debug-Storage', 'qiniu-direct');
+    res.setHeader('X-Debug-CDN', qiniuConfig.cdnDomain);
+    res.setHeader('X-Debug-File', filename);
+
     res.redirect(directUrl);
 });
 
