@@ -135,8 +135,12 @@ document.addEventListener('DOMContentLoaded', () => {
             modelName = 'pink.fbx'; // 亮色主题使用粉色模型
         }
 
-        // 构建API路径
-        const modelPath = `${apiBaseUrl}/api/3d/${modelName}`;
+        // 直接使用七牛云CDN路径（使用HTTP协议，因为该域名不支持HTTPS）
+        const qiniuCdnDomain = 'sxmxw4j3n.bkt.gdipper.com';
+        const modelPath = `http://${qiniuCdnDomain}/${modelName}`;
+
+        // 添加提示信息
+        console.warn('注意：使用HTTP加载CDN资源可能会被浏览器安全策略阻止，如遇到混合内容错误，请配置七牛云HTTPS');
 
         // 打印完整的模型路径以进行调试
         console.log('完整模型路径:', modelPath);
@@ -780,12 +784,12 @@ document.addEventListener('DOMContentLoaded', () => {
             debugInfo.innerHTML = `
                 <p style="margin:0 0 5px 0;font-weight:bold;">诊断信息:</p>
                 <ul style="margin:0;padding-left:20px;list-style:disc;">
-                    <li>API基础URL: ${apiBaseUrl || '未设置'}</li>
+                    <li>CDN域名: ${qiniuCdnDomain || '未设置'}</li>
                     <li>当前主题: ${isDarkTheme ? '暗色 (red.fbx)' : '亮色 (pink.fbx)'}</li>
                     <li>请求路径: ${currentModelPath || '未知'}</li>
                     <li>请求时间: ${new Date().toLocaleString()}</li>
                 </ul>
-                <p style="margin:5px 0 0 0;font-style:italic;">提示: 请检查后端API是否已启动，并且配置了正确的CORS设置</p>
+                <p style="margin:5px 0 0 0;font-style:italic;">提示: 1.请检查网络连接和七牛云CDN设置 2.如果您的网站使用HTTPS，浏览器可能会阻止加载HTTP资源(混合内容) 3.建议在七牛云配置HTTPS支持</p>
             `;
             loadingContent.appendChild(debugInfo);
         }
